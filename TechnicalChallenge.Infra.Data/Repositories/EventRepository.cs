@@ -21,15 +21,20 @@ namespace TechnicalChallenge.Infra.Data.Repositories
         }
 
 
-        public IList<Event> GetAll(int take,int skip,Guid UserId)
+        public IList<Event> GetAll(int take,int skip,Guid userId)
         {
-            return _context.Events.Where(x => x.CreatedBy == UserId).Skip(skip).Take(take).ToList();
+            return _context.Events.Where(x => x.CreatedBy == userId).Skip(skip).Take(take).ToList();
         }
 
-        public IList<Event> GetAllResume(int take, int skip, Guid UserId)
+        public IList<Event> GetAllResume(int take, int skip, Guid userId)
         {
-            return _context.Events.Where(x => x.CreatedBy == UserId).Skip(skip).Take(take)
+            return _context.Events.Where(x => x.CreatedBy == userId).Skip(skip).Take(take)
                 .Include(x => x.EventUsers).ToList();
+        }
+
+        public Event GetResumeDetail(Guid eventId)
+        {
+            return _context.Events.Include(x => x.EventUsers).FirstOrDefault(x => x.Id == eventId);
         }
 
     }

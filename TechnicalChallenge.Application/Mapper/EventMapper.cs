@@ -17,6 +17,7 @@ namespace TechnicalChallenge.Application.Mapper.Event
             CreateMap<CreateEventViewModel, Domain.Entities.Event>();
             CreateMap<EventViewModel, Domain.Entities.Event>();
             CreateMap<Domain.Entities.Event, CreateEventViewModel>();
+            CreateMap<Domain.Entities.Event, EventViewModel>();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TechnicalChallenge.Application.Interfaces;
 using TechnicalChallenge.Application.ViewModels.Event;
+using TechnicalChallenge.Application.ViewModels.EventUser;
 using TechnicalChallenge.Domain.Core.Bus;
 using TechnicalChallenge.Domain.Core.Notifications;
 using TechnicalChallenge.Infra.CrossCutting.Security.Interfaces;
@@ -69,6 +70,46 @@ namespace TechnicalChallenge.Controllers
 			return Response(_eventApplicationService.GetAllResume(take, skip));
 		}
 
+
+		[HttpDelete("remove/{id}")]
+		public IActionResult Remove(Guid id)
+		{
+			_eventApplicationService.Remove(id);
+			return Response();
+		}
+
+
+		[HttpPost("addUser")]
+		public IActionResult SaveEventUser([FromBody] CreateEventUserViewModel createEventUserViewModel)
+        {
+			return Response(_eventApplicationService.AddUser(createEventUserViewModel));
+        }
+
+
+		[HttpGet("getAllEventUsers/{eventId}")]
+		public IActionResult GetAllEventUsers([FromRoute] Guid eventId,int take = 10, int skip = 0)
+		{
+			return Response(_eventApplicationService.GetAllEventUsers(take, skip, eventId));
+		}
+
+		[HttpPut("updateIsPaidEventUser/{id}/{isPaid}")]
+		public IActionResult UpdateIsPaidEventUser(Guid id,bool isPaid)
+        {
+			return Response(_eventApplicationService.UpdateIsPaidEventUser(id, isPaid));
+        }
+
+		[HttpGet("getResumeDetail/{eventId}")]
+		public IActionResult GetResumeDetail(Guid eventId)
+		{
+			return Response(_eventApplicationService.GetResumeDetail(eventId));
+		}
+
+		[HttpDelete("remove/eventUser/{id}")]
+		public IActionResult RemoveEventUser(Guid id)
+		{
+			_eventApplicationService.RemoveEventUser(id);
+			return Response();
+		}
 
 	}
 }

@@ -74,6 +74,13 @@ namespace TechnicalChallenge
 
             app.UserIndentificationMiddleware();
 
+            app.UseCors(option => {
+                option.AllowAnyOrigin();
+                option.AllowAnyHeader();
+                option.AllowAnyMethod();
+                option.AllowAnyOrigin();
+                });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -89,7 +96,6 @@ namespace TechnicalChallenge
                 .AllowAnyOrigin()
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .SetIsOriginAllowed((host) => true)
                 .Build());
             });
         }

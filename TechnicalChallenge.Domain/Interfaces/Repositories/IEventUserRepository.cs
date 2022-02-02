@@ -9,6 +9,6 @@ namespace TechnicalChallenge.Domain.Interfaces.Repositories
 {
     public interface IEventUserRepository : IBaseRepository<EventUser>
     {
-        IList<EventUser> GetAll(int take, int skip, Guid UserId);
+        IList<EventUser> GetAll(int take, int skip, Guid eventId);
     }
 }

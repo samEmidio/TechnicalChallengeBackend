@@ -16,7 +16,7 @@ namespace TechnicalChallenge.Application.Validation.EventUser
 
             RuleFor(x => x.Name).NotEmpty().WithMessage("O nome do usuario não pode estar vazio");
 
-            RuleFor(x => x.Value).LessThan(0).WithMessage("O valor atribuido ao usuario não pode ser menor que zero");
+            RuleFor(x => x.Value).GreaterThanOrEqualTo(0).WithMessage("O valor atribuido ao usuario não pode ser menor que zero");
         }
     }
 }

@@ -73,7 +73,7 @@ namespace TechnicalChallenge.Application.Services
 
             IList<EventResumeDTO> resumes = new List<EventResumeDTO>();
 
-            foreach(var event_ in events)
+            foreach (var event_ in events)
             {
                 var resume = new EventResumeDTO();
                 resume.EventId = event_.Id;
@@ -88,9 +88,28 @@ namespace TechnicalChallenge.Application.Services
             return resumes;
         }
 
-        public IList<EventViewModel> GetAll(int take,int skip)
+        public EventResumeDetailDTO GetResumeDetail(Guid eventId)
         {
-            var events = _uow.Events.GetAll(take, skip,_loggedUser.Id);
+            var event_ = _uow.Events.GetResumeDetail(eventId);
+
+            if(event_ is null)
+                _bus.RaiseEvent(new DomainNotification("", "O evento não foi encontrado."));
+            else
+            {
+                EventResumeDetailDTO resumeDetail = new EventResumeDetailDTO();
+                resumeDetail.TotalUsers = event_.EventUsers.Count();
+                resumeDetail.TotalToPay = event_.EventUsers.Sum(x => x.Value);
+                resumeDetail.TotalPaidUsers = event_.EventUsers.Where(x => x.IsPaid).ToList().Count();
+                resumeDetail.TotalPaid = event_.EventUsers.Where(x => x.IsPaid).ToList().Sum(x => x.Value);
+                return resumeDetail;
+            }
+
+            return null;
+        }
+
+        public IList<EventViewModel> GetAll(int take, int skip)
+        {
+            var events = _uow.Events.GetAll(take, skip, _loggedUser.Id);
             var eventsViewModel = _mapper.Map<IList<EventViewModel>>(events);
             return eventsViewModel;
         }
@@ -135,13 +154,50 @@ namespace TechnicalChallenge.Application.Services
         }
 
 
-        public IList<EventUserViewModel> GetAllEventUsers(int take, int skip)
+        public IList<EventUserViewModel> GetAllEventUsers(int take, int skip, Guid eventId)
         {
-            var eventUsers = _uow.EventUsers.GetAll(take, skip, _loggedUser.Id);
+            var eventUsers = _uow.EventUsers.GetAll(take, skip, eventId);
             var eventUsersViewModel = _mapper.Map<IList<EventUserViewModel>>(eventUsers);
             return eventUsersViewModel;
         }
 
+        public EventUserViewModel UpdateIsPaidEventUser(Guid id, bool isPaid)
+        {
+            try
+            {
+
+                var eventUser = _uow.EventUsers.GetById(id);
+                if(eventUser is null)
+                    _bus.RaiseEvent(new DomainNotification("", "usuario do evento não foi encontrado."));
+                else
+                {
+                    eventUser.IsPaid = isPaid;
+
+
+                    BeginTransaction();
+                    _uow.EventUsers.Update(eventUser);
+                    Commit();
+
+                    return _mapper.Map<EventUserViewModel>(eventUser);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
+
+            return null;
+        }
+
+        public void RemoveEventUser(Guid id)
+        {
+            var eventUser = _uow.EventUsers.GetById(id);
+            if (eventUser is null)
+                _bus.RaiseEvent(new DomainNotification("", "O usuario do evento não foi encontrado."));
+            BeginTransaction();
+            _uow.EventUsers.Remove(id);
+            Commit();
+        }
 
     }
 }

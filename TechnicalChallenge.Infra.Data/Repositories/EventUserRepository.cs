@@ -20,9 +20,9 @@ namespace TechnicalChallenge.Infra.Data.Repositories
         }
 
 
-        public IList<EventUser> GetAll(int take, int skip, Guid UserId)
+        public IList<EventUser> GetAll(int take, int skip, Guid eventId)
         {
-            return _context.EventUsers.Where(x => x.CreatedBy == UserId).Skip(skip).Take(take).ToList();
+            return _context.EventUsers.Where(x => x.EventId == eventId).Skip(skip).Take(take).ToList();
         }
     }
 }
