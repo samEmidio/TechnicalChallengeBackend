@@ -12,9 +12,9 @@ namespace TechnicalChallenge.Application.Validation.Event
     {
         public CreateEventValidation()
         {
-            RuleFor(x => x.Date).NotEmpty().WithMessage("O nome do usuario não pode estar vazio");
+            RuleFor(x => x.Date).NotEmpty().WithMessage("A data não pode estar vazia");
 
-            RuleFor(x => x.Description).NotEmpty().WithMessage("O sobrenome do usuario não pode estar vazio");
+            RuleFor(x => x.Description).NotEmpty().WithMessage("O nome do não pode estar vazio");
 
         }
     }
